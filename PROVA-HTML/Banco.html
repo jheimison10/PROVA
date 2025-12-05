@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Mini Banco</title>
+  </head>
+  <body>
+    <h2>Banco</h2>
+
+    <button onclick="criarConta()">Criar Conta Corrente</button>
+    <br><br>
+
+    <input id="meuInput" type="text" placeholder="Digite um valor" />
+
+    <button onclick="depositar()">Depositar</button>
+    <button onclick="sacar()">Sacar</button>
+    <button onclick="verSaldo()">Ver saldo</button>
+    <button onclick="emprestimo()">Empréstimo</button>
+
+    <p id="resultado"></p>
+
+    <script>
+      let saldo = 0;
+      let contaCriada = false;
+
+      function mostrar(msg) {
+        document.getElementById("resultado").innerText = msg;
+      }
+
+      function pegarValor() {
+        return Number(document.getElementById("meuInput").value);
+      }
+
+      function criarConta() {
+        if (contaCriada) {
+          return mostrar("A conta já foi criada!");
+        }
+        contaCriada = true;
+        saldo = 0;
+        mostrar("Conta Corrente criada com sucesso! Saldo inicial: R$ 0");
+      }
+
+      function depositar() {
+        if (!contaCriada) return mostrar("Crie uma conta antes de depositar.");
+
+        const valor = pegarValor();
+        if (isNaN(valor) || valor <= 0) {
+          return mostrar("Digite um valor válido para depósito.");
+        }
+
+        const taxa = valor * 0.07; // 7%
+        const valorFinal = valor - taxa;
+
+        saldo += valorFinal;
+
+        mostrar(
+          "Depósito: R$ " + valor +
+          "\nTaxa de 7%: R$ " + taxa.toFixed(2) +
+          "\nValor creditado: R$ " + valorFinal.toFixed(2) +
+          "\nNovo saldo: R$ " + saldo.toFixed(2)
+        );
+      }
+
+      function sacar() {
+        if (!contaCriada) return mostrar("Crie uma conta antes de sacar.");
+
+        const valor = pegarValor();
+        if (isNaN(valor) || valor <= 0) {
+          return mostrar("Digite um valor válido para saque.");
+        }
+
+        const taxa = valor * 0.10; // 10%
+        const total = valor + taxa;
+
+        if (total > saldo) {
+          return mostrar("Saldo insuficiente! (Necessário: R$ " + total.toFixed(2) + ")");
+        }
+
+        saldo -= total;
+
+        mostrar(
+          "Saque solicitado: R$ " + valor +
+          "\nTaxa de 10%: R$ " + taxa.toFixed(2) +
+          "\nTotal debitado: R$ " + total.toFixed(2) +
+          "\nNovo saldo: R$ " + saldo.toFixed(2)
+        );
+      }
+
+      function verSaldo() {
+        if (!contaCriada) return mostrar("Crie uma conta antes de ver o saldo.");
+        mostrar("Saldo atual: R$ " + saldo.toFixed(2));
+      }
+
+      function emprestimo() {
+        if (!contaCriada) return mostrar("Crie uma conta antes de pedir empréstimo.");
+
+        const valor = pegarValor();
+        if (isNaN(valor) || valor <= 0) {
+          return mostrar("Digite um valor válido para empréstimo.");
+        }
+
+        const parcelas = 5;
+        const valorParcela = valor / parcelas;
+
+        saldo += valor; // Crédito imediato
+
+        mostrar(
+          "Empréstimo aprovado!\n" +
+          "Valor total: R$ " + valor.toFixed(2) +
+          "\nParcelas: 5x de R$ " + valorParcela.toFixed(2) +
+          "\nSaldo após crédito: R$ " + saldo.toFixed(2)
+        );
+      }
+    </script>
+  </body>
+</html>
